@@ -40,7 +40,7 @@ Following software code is developed and enhanced so far:
 2. [Edge wallet for citizens](https://github.com/Sphereon-Opensource/mobile-wallet): Repository with the mobile edge wallet for citizens and vendors
 3. [SSI-SDK](https://github.com/Sphereon-Opensource/SSI-SDK): Lower level SDK modules
 
-# 7. About The Social Wallet project and Sphereon
+# 3. About The Social Wallet project and Sphereon
 
 Sphereon has received funding from the NGI TrustChain project. Project is funded under the NGI initiative by the European Union (GA No
 101093274). The social wallet components are released as an Open-Source Libraries in Github.
