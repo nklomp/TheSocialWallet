@@ -1,0 +1,42 @@
+{
+  "extends": "../tsconfig-base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "declarationDir": "dist",
+    "strictPropertyInitialization": false
+  },
+  "include": ["src/**/*.json", "src/**/*.ts"],
+  "references": [
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../contact-manager"
+    },
+    {
+      "path": "../credential-store"
+    },
+    {
+      "path": "../data-store"
+    },
+    {
+      "path": "../issuance-branding"
+    },
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../sd-jwt"
+    },
+    {
+      "path": "../mdl-mdoc"
+    },
+    {
+      "path": "../xstate-persistence"
+    }
+  ]
+}

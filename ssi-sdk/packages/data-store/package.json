@@ -1,0 +1,56 @@
+{
+  "name": "@sphereon/ssi-sdk.data-store",
+  "version": "0.30.1",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build",
+    "build:clean": "tsc --build --clean && tsc --build",
+    "typeorm": "ts-node --project ./tsconfig.json -r tsconfig-paths/register ../../node_modules/.pnpm/typeorm@0.3.12_sqlite3@5.1.6_ts-node@10.9.1/node_modules/typeorm/cli.js --config src/migrations/internal-migrations-ormconfig.ts",
+    "typeorm-sqlite:migration:generate": "pnpm run typeorm -- migration:generate -c migration-sqlite -d src/migrations/sqlite -n",
+    "typeorm-sqlite:migration:run": "pnpm run typeorm -- migration:run -c migration-sqlite",
+    "typeorm-postgres:migration:generate": "pnpm run typeorm -- migration:generate -c migration-postgres -d src/migrations/postgres -n",
+    "typeorm-postgres:migration:run": "pnpm run typeorm -- migration:run -c migration-postgres"
+  },
+  "dependencies": {
+    "@sphereon/kmp-mdl-mdoc": "0.2.0-SNAPSHOT.22",
+    "@sphereon/pex": "5.0.0-unstable.9",
+    "@sphereon/ssi-sdk-ext.did-utils": "0.24.1-unstable.130",
+    "@sphereon/ssi-sdk-ext.identifier-resolution": "0.24.1-unstable.130",
+    "@sphereon/ssi-sdk.agent-config": "workspace:*",
+    "@sphereon/ssi-sdk.core": "workspace:*",
+    "@sphereon/ssi-types": "workspace:*",
+    "@veramo/core": "4.2.0",
+    "@veramo/utils": "4.2.0",
+    "blakejs": "^1.2.1",
+    "class-validator": "^0.14.1",
+    "debug": "^4.3.5",
+    "sha.js": "^2.4.11",
+    "typeorm": "^0.3.20"
+  },
+  "devDependencies": {
+    "@types/sha.js": "^2.4.4",
+    "pg": "^8.12.0",
+    "sqlite3": "^5.1.7"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "TypeORM",
+    "SQLite",
+    "PostgreSQL",
+    "Contact Store"
+  ]
+}

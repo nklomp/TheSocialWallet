@@ -1,0 +1,79 @@
+{
+  "type": "VerticalLayout",
+  "elements": [
+    {
+      "type": "Control",
+      "label": "Action",
+      "scope": "#/properties/action",
+      "options": {
+        "autocomplete": true
+      }
+    },
+    {
+      "type": "VerticalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Type",
+          "scope": "#/properties/type",
+          "options": {
+            "autocomplete": true
+          }
+        },
+        {
+          "type": "Control",
+          "label": "Alias",
+          "scope": "#/properties/alias"
+        }
+      ],
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/action",
+          "schema": {
+            "const": "generate"
+          }
+        }
+      }
+    },
+    {
+      "type": "VerticalLayout",
+      "elements": [
+        {
+          "type": "Control",
+          "label": "Key",
+          "scope": "#/properties/key"
+        }
+      ],
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/action",
+          "schema": {"const": "select"}
+        }
+      }
+    },
+    {
+      "type": "VerticalLayout",
+      "elements": [
+        {
+          "type": "Label",
+          "text": "Purposes"
+        },
+        {
+          "type": "Control",
+          "scope": "#/properties/purposes"
+        }
+      ],
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/action",
+          "schema": {
+            "const": "generate"
+          }
+        }
+      }
+    }
+  ]
+}
