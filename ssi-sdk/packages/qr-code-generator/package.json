@@ -1,0 +1,61 @@
+{
+  "name": "@sphereon/ssi-sdk.qr-code-generator",
+  "version": "0.30.1",
+  "description": "QR Code provider (react)",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "veramo": {
+    "pluginInterfaces": {
+      "IQRCodeGenerator": "./src/types/IQRCodeGenerator.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "build:clean": "tsc --build --clean && tsc --build"
+  },
+  "dependencies": {
+    "@veramo/core": "4.2.0",
+    "base64url": "^3.0.1",
+    "react": "^18.3.1",
+    "react-qr-code": "^2.0.15"
+  },
+  "devDependencies": {
+    "@inrupt/jest-jsdom-polyfills": "^1.8.0",
+    "@sphereon/ssi-sdk.agent-config": "workspace:*",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^14.3.1",
+    "@types/jest": "^27.5.2",
+    "@types/react": "^18.3.3",
+    "@types/uuid": "^9.0.8",
+    "global-jsdom": "^8.8.0",
+    "jest": "^27.5.1",
+    "jest-environment-jsdom": "^27.5.1",
+    "jsdom": "^21.1.2",
+    "react-dom": "^18.3.1",
+    "ts-jest": "^27.1.5"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "git@github.com:Sphereon-Opensource/SSI-SDK.git",
+  "author": "Sphereon <dev@sphereon.com>",
+  "license": "Apache-2.0",
+  "keywords": [
+    "Sphereon",
+    "SSI",
+    "React",
+    "WACI",
+    "OpenID",
+    "OpenID4VP",
+    "OpenID4VCI",
+    "QR Code"
+  ]
+}

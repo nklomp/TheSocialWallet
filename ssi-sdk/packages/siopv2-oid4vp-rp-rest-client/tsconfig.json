@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig-base.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../siopv2-oid4vp-common"
+    }
+  ]
+}

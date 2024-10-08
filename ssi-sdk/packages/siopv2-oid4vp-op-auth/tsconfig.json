@@ -1,0 +1,45 @@
+{
+  "extends": "../tsconfig-base.json",
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "declarationDir": "dist"
+  },
+  "include": ["src/**/*.json", "src/**/*.ts"],
+  "references": [
+    {
+      "path": "../sd-jwt"
+    },
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../pd-manager"
+    },
+    {
+      "path": "../contact-manager"
+    },
+    {
+      "path": "../credential-store"
+    },
+    {
+      "path": "../data-store"
+    },
+    {
+      "path": "../presentation-exchange"
+    },
+    {
+      "path": "../issuance-branding"
+    },
+    {
+      "path": "../xstate-persistence"
+    }
+  ]
+}

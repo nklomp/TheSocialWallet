@@ -1,0 +1,26 @@
+{
+  "extends": "../tsconfig-base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "declarationDir": "dist",
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
+    "noUnusedLocals": false
+  },
+  "references": [
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../data-store"
+    },
+    {
+      "path": "../credential-store"
+    }
+  ]
+}

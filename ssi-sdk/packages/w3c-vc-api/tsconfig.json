@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "resolveJsonModule": true,
+    "declarationDir": "dist",
+    "esModuleInterop": true
+  },
+  "references": [
+    {
+      "path": "../agent-config"
+    },
+    {
+      "path": "../ssi-express-support"
+    },
+    {
+      "path": "../siopv2-oid4vp-common"
+    },
+    {
+      "path": "../siopv2-oid4vp-rp-auth"
+    },
+    {
+      "path": "../presentation-exchange"
+    },
+    {
+      "path": "../credential-store"
+    },
+    {
+      "path": "../ssi-types"
+    },
+    {
+      "path": "../ssi-sdk-core"
+    },
+    {
+      "path": "../kv-store"
+    },
+    {
+      "path": "../vc-status-list-issuer"
+    }
+  ],
+  "extends": "../tsconfig-base.json"
+}
