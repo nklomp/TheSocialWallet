@@ -5,6 +5,9 @@
   <br>
 </h1>
 
+**_WARNING: This readme and code base is a copy of the Sphereon Github repository. The code as such will not be maintained in this repository. If you have a question, need
+support, or a suggest go to the [Sphereon Github](https://github.com/Sphereon-OpenSource) please_**
+
 The Sphereon agent is responsible for issuing and verifying Verifiable Credentials as well as creating and resolving
 Decentralized Identifiers. It can be run standalone for issuer and verifier roles, but can also be started as a backend
 to the web wallet.
@@ -12,7 +15,7 @@ to the web wallet.
 # Environment variables
 
 There are several environment variables, allowing you to influence the behaviour of the agent(s).
-Please see [.env.example](./.env.example) for a list and explanation of all the environment variables.
+Please see [.env.example](.env.example) for a list and explanation of all the environment variables.
 
 # Agent instances
 
@@ -28,7 +31,6 @@ functionalities of the agent. If you want to use Docker then there are 2 distinc
   storage of Verifiable Credentials. Creating DIDs from the REST API is enabled on this agent. Resolution of DIDs will
   use hybrid resolution, meaning any did:web will be resolved to the actual https endpoint, but it also resolved
   non-published DIDs only available to the agent.
-
 - The **Wallet Agent**: This agent running on port 5010 by default, it can create and verify Verifiable
   Credentials using a W3C VC API, or using OID4VC. The DIDs will be resolved in hybrid mode, meaning the agent will
   first look
@@ -62,8 +64,6 @@ and not load some test/default DIDs.
 
 NOTE: The did .json files are read from the sub-folder `dids` in the `CONF_PATH`.
 
-You can find more information on the Agent setup and the configuration files in the above folder in [agent-setup.md](../../../docs/agent-setup.md)
-
 ## Examples
 
 You can find example configuration files in the [conf/examples](./conf/examples) folder. It contains examples for both
@@ -76,9 +76,6 @@ an [ES256/Secp256r1 key](./conf/examples/dids/web-es256.json) that will be hoste
 localhost:es256.
 
 ## X509 Certificate support
-
-**Warning: This is a more advanced topic. We suggest to not start with X.509 certificates right from the start. You can start with [did:jwk](./conf/examples/dids/jwk-es256.json),
-which you can also find in the examples conf folder under dids** 
 
 When creating a did:web from configuration you can use X509 certificates. In order to do so you will first need to make
 sure you have the following files/content available in PEM format:
@@ -176,7 +173,10 @@ Example body:
       "https://ref.sphereon.com/sphereon/vc/license-context/"
     ],
     "id": "http://localhost/vc/license/company_prefix/8790171",
-    "type": ["VerifiableCredential", "SPHEREONCompanyPrefixLicenseCredential"],
+    "type": [
+      "VerifiableCredential",
+      "SPHEREONCompanyPrefixLicenseCredential"
+    ],
     "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
     "issuanceDate": "2023-06-22T00:00:00Z",
     "validUntil": "2024-06-22T00:00:00Z",
@@ -213,7 +213,10 @@ Response:
       "https://w3id.org/security/suites/jws-2020/v1"
     ],
     "id": "http://localhost/vc/license/company_prefix/8790171",
-    "type": ["VerifiableCredential", "SPHEREONCompanyPrefixLicenseCredential"],
+    "type": [
+      "VerifiableCredential",
+      "SPHEREONCompanyPrefixLicenseCredential"
+    ],
     "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
     "issuanceDate": "2023-06-22T00:00:00Z",
     "validUntil": "2024-06-22T00:00:00Z",
@@ -272,7 +275,10 @@ Example verification body:
       "https://w3id.org/security/suites/jws-2020/v1"
     ],
     "id": "http://localhost/vc/license/company_prefix/8790171",
-    "type": ["VerifiableCredential", "SPHEREONCompanyPrefixLicenseCredential"],
+    "type": [
+      "VerifiableCredential",
+      "SPHEREONCompanyPrefixLicenseCredential"
+    ],
     "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
     "issuanceDate": "2023-06-22T00:00:00Z",
     "validUntil": "2024-06-22T00:00:00Z",
@@ -507,7 +513,10 @@ The response:
       ],
       "id": "http://localhost:5000/vc/status-lists/1",
       "issuer": "did:jwk:eyJhbGciOiJFZERTQSIsInVzZSI6InNpZyIsImt0eSI6Ik9LUCIsImNydiI6IkVkMjU1MTkiLCJ4IjoiaWFSbUhrUnJSa0FUSmFPTk95QllMUjNTZC10RWlqR0JBU3BuRzNyaFdEYyJ9",
-      "type": ["VerifiableCredential", "StatusList2021Credential"],
+      "type": [
+        "VerifiableCredential",
+        "StatusList2021Credential"
+      ],
       "credentialSubject": {
         "id": "http://localhost:5000/vc/status-lists/1",
         "type": "StatusList2021",
@@ -747,7 +756,9 @@ Response example:
     "assertionMethod": [
       "did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
     ],
-    "authentication": ["did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"]
+    "authentication": [
+      "did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
+    ]
   },
   "didResolutionMetadata": {},
   "didDocumentMetadata": {
@@ -799,8 +810,12 @@ If a DID is found it will return the DID Document (not a resolution result)
       "type": "JsonWebKey2020"
     }
   ],
-  "assertionMethod": ["did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"],
-  "authentication": ["did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"]
+  "assertionMethod": [
+    "did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
+  ],
+  "authentication": [
+    "did:web:verification.sphereon.com:did:party_gln:12345678#02925110021f5d53468136ad4bf2233596bc8ee22f07c4b37548a346d643fcb73d"
+  ]
 }
 ```
 

@@ -1,0 +1,1107 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Sphereon OID4VCI API",
+    "description": "API for OpenID for Verifiable Credential Issuance\nThis API allows issuers to provide verifiable credentials to wallets following the OID4VCI specification.\n\nIt describes the complete API, including the wallets perspective. Any wallet conforming to OID4VCI should work with these endpoints out of the box.\nFrom a backend you do not need to worry about these endpoints!\n\nThe backend/webapp endpoint describe:\n- How to create a session and get a URI to include in a QR code or link\n- How to poll the issueance status\n- How to access a specific credential offer\n",
+    "version": "0.1.1"
+  },
+  "servers": [
+    {
+      "url": "https://agent.ssi.dev.sphereon.com/did-web/oid4vci",
+      "description": "Did Web JWT example issuer"
+    },
+    {
+      "url": "https://localhost:5010/oid4vci-local",
+      "description": "localhost"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Backend",
+      "description": "The backend/webapp endpoints that want to issue a credential"
+    },
+    {
+      "name": "Wallet",
+      "description": "The endpoints conforming to the OID4VCI specification used by wallet implementers"
+    },
+    {
+      "name": "Integrated Authorization Server",
+      "description": "Integrated Authorization Server endpoints (if enabled and external AS is not used)"
+    }
+  ],
+  "paths": {
+    "/webapp/credential-offers": {
+      "post": {
+        "tags": [
+          "Backend"
+        ],
+        "summary": "Create credential offer",
+        "description": "Generate and return a new credential offer",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CredentialOfferRequest"
+              },
+              "examples": {
+                "Pre Authorized Code simple": {
+                  "value": {
+                    "credential_configuration_ids": [
+                      "WoonplaatsverklaringVCJWT"
+                    ],
+                    "grants": {
+                      "urn:ietf:params:oauth:grant-type:pre-authorized_code": {
+                        "pre-authorized_code": "d270fee1-9185-4e60-9901-d291e1338d7a"
+                      }
+                    },
+                    "credentialDataSupplierInput": {
+                      "naam": "Example name",
+                      "rsin": "RSIN example",
+                      "straatnaam": "Street example",
+                      "huisnummer": "Housenumber example",
+                      "postcode": "Zipcode example",
+                      "plaats": "Place example"
+                    }
+                  }
+                },
+                "Pre Authorized Code simple with qr code": {
+                  "value": {
+                    "credential_configuration_ids": [
+                      "WoonplaatsverklaringVCJWT"
+                    ],
+                    "grants": {
+                      "urn:ietf:params:oauth:grant-type:pre-authorized_code": {
+                        "pre-authorized_code": "d270fee1-9185-4e60-9901-d291e1338d7b"
+                      }
+                    },
+                    "qrCodeOpts": {},
+                    "credentialDataSupplierInput": {
+                      "naam": "Example name",
+                      "rsin": "RSIN example",
+                      "straatnaam": "Street example",
+                      "huisnummer": "Housenumber example",
+                      "postcode": "Zipcode example",
+                      "plaats": "Place example"
+                    }
+                  }
+                },
+                "Pre Authorized Code with pincode": {
+                  "value": {
+                    "credential_configuration_ids": [
+                      "WoonplaatsverklaringVCJWT"
+                    ],
+                    "grants": {
+                      "urn:ietf:params:oauth:grant-type:pre-authorized_code": {
+                        "pre-authorized_code": "d270fee1-9185-4e60-9901-d291e1338d7c"
+                      },
+                      "tx_code": {
+                        "input_mode": "numeric",
+                        "length": 4,
+                        "description": "Please check your e-mail for a pin code"
+                      }
+                    },
+                    "client_id": "https://wallet.example.com",
+                    "credentialDataSupplierInput": {
+                      "naam": "Example name",
+                      "rsin": "RSIN example",
+                      "straatnaam": "Street example",
+                      "huisnummer": "Housenumber example",
+                      "postcode": "Zipcode example",
+                      "plaats": "Place example"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                },
+                "example": {
+                  "uri": "openid-credential-offer://?credential_offer=%7B%22credential_issuer%22%3A%22https%3A%2F%2Fagent.ssi.dev.sphereon.com%2Fdid-web%2Foid4vci%22%2C%22credential_configuration_ids%22%3A%5B%22WoonplaatsverklaringVCJWT%22%5D%2C%22grants%22%3A%7B%22urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Apre-authorized_code%22%3A%7B%22pre-authorized_code%22%3A%22d270fee1-9185-4e60-9901-d291e1338d7a%22%7D%7D%7D"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/webapp/credential-offer-status": {
+      "post": {
+        "tags": [
+          "Backend"
+        ],
+        "summary": "Get credential issuance status",
+        "description": "Check the current status of a credential issuance request",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/webapp_credentialofferstatus_body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueStatusResponse"
+                },
+                "examples": {
+                  "Offer created": {
+                    "value": {
+                      "createdAt": 1738694971586,
+                      "lastUpdatedAt": 1738694971586,
+                      "status": "OFFER_CREATED"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Credential offer not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/webapp/credential-offers/{id}": {
+      "get": {
+        "tags": [
+          "Backend"
+        ],
+        "summary": "Get credential offer",
+        "description": "Retrieve a specific credential offer by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique identifier of the credential offer",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "b326c4ab-16f1-4304-83e1-4637f8fe4207"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssueStatusResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/.well-known/openid-credential-issuer": {
+      "get": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "Get credential issuer metadata",
+        "description": "Returns the metadata about the credential issuer's capabilities, conforms to OID4VCI",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IssuerMetadata"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/.well-known/oauth-authorization-server": {
+      "get": {
+        "tags": [
+          "Integrated Authorization Server"
+        ],
+        "summary": "Get authorization server metadata, if the integrated authorization server is enabled. Conforms to OAuth2",
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/authorization-challenge": {
+      "post": {
+        "tags": [
+          "Integrated Authorization Server"
+        ],
+        "summary": "Authorization challenge endpoint in case a first party flow is enabled with the integrated authorization server",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthorizationChallengeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationChallengeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/token": {
+      "post": {
+        "tags": [
+          "Integrated Authorization Server"
+        ],
+        "summary": "Access token endpoint",
+        "description": "Issues an access token based on an authorization request, in case the integrated authorization server is enabled",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccessTokenRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccessTokenResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/credentials": {
+      "post": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "Get credential endpoint",
+        "description": "Request issuance of a credential",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CredentialRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response with issued credential",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CredentialResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/notification": {
+      "post": {
+        "tags": [
+          "Wallet"
+        ],
+        "summary": "Notification endpoint",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotificationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Notification processed successfully"
+          },
+          "400": {
+            "description": "Invalid notification request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error code",
+            "example": "invalid_request"
+          },
+          "error_description": {
+            "type": "string",
+            "description": "Human readable error description",
+            "example": "The credential offer xyz was not found"
+          }
+        },
+        "description": "Standard error response format"
+      },
+      "CredentialResponse": {
+        "type": "object",
+        "properties": {
+          "credential": {
+            "description": "The issued credential, either as a JWT string or JSON object",
+            "example": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9...",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object"
+              }
+            ]
+          },
+          "format": {
+            "type": "string",
+            "description": "Format of the issued credential",
+            "example": "jwt_vc_json",
+            "enum": [
+              "jwt_vc_json",
+              "jwt_vc",
+              "ldp_vc",
+              "jwt_vc_json-ld",
+              "vc+sd-jwt",
+              "mso_mdoc"
+            ]
+          },
+          "c_nonce": {
+            "type": "string",
+            "description": "Nonce for subsequent credential requests",
+            "example": "b326c4ab-16f1-4304-83e1-4637f8fe4207"
+          },
+          "c_nonce_expires_in": {
+            "type": "number",
+            "description": "Expiration time of the c_nonce in seconds",
+            "example": 300
+          }
+        },
+        "description": "Response containing the issued credential"
+      },
+      "IssueStatusResponse": {
+        "required": [
+          "createdAt",
+          "lastUpdatedAt",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "createdAt": {
+            "type": "number",
+            "description": "Unix timestamp of when the request was created",
+            "example": 1706533345000
+          },
+          "lastUpdatedAt": {
+            "type": "number",
+            "description": "Unix timestamp of the last status update",
+            "example": 1706533346000
+          },
+          "status": {
+            "$ref": "#/components/schemas/IssueStatus"
+          },
+          "error": {
+            "type": "string"
+          },
+          "clientId": {
+            "type": "string",
+            "description": "Client identifier",
+            "example": "https://wallet.example.com"
+          }
+        },
+        "description": "Status of a credential issuance request"
+      },
+      "AuthorizationChallengeRequest": {
+        "type": "object",
+        "properties": {
+          "client_id": {
+            "type": "string",
+            "description": "Client identifier",
+            "example": "https://wallet.example.com"
+          },
+          "issuer_state": {
+            "type": "string",
+            "description": "Opaque state from issuer",
+            "example": "a81bc81b-dead-4563-8692-3bc3c7f12897"
+          },
+          "auth_session": {
+            "type": "string",
+            "description": "Session identifier for associating subsequent requests",
+            "example": "d270fee1-9185-4e60-9901-d291e1338d7a"
+          },
+          "scope": {
+            "type": "string"
+          },
+          "code_challenge": {
+            "type": "string"
+          },
+          "code_challenge_method": {
+            "type": "string",
+            "enum": [
+              "plain",
+              "S256"
+            ]
+          },
+          "presentation_during_issuance_session": {
+            "type": "string"
+          }
+        },
+        "description": "Request to initiate authorization challenge"
+      },
+      "AuthorizationChallengeResponse": {
+        "required": [
+          "authorization_code"
+        ],
+        "type": "object",
+        "properties": {
+          "authorization_code": {
+            "type": "string"
+          }
+        }
+      },
+      "AccessTokenRequest": {
+        "required": [
+          "grant_type"
+        ],
+        "type": "object",
+        "properties": {
+          "client_id": {
+            "type": "string",
+            "description": "Unique identifier for the client making the request",
+            "example": "client-12345"
+          },
+          "code": {
+            "type": "string",
+            "description": "Authorization code received from the authorization server",
+            "example": "abc123xyz"
+          },
+          "code_verifier": {
+            "type": "string",
+            "description": "Code verifier used in the PKCE flow",
+            "example": "s256-code-verifier"
+          },
+          "grant_type": {
+            "type": "string",
+            "description": "OAuth 2.0 grant type",
+            "example": "authorization_code",
+            "enum": [
+              "authorization_code",
+              "urn:ietf:params:oauth:grant-type:pre-authorized_code",
+              "password"
+            ]
+          },
+          "pre-authorized_code": {
+            "type": "string",
+            "description": "Pre-authorized code used for credential issuance",
+            "example": "pre-auth-code-xyz"
+          },
+          "redirect_uri": {
+            "type": "string",
+            "description": "The redirect URI where the response should be sent",
+            "example": "https://wallet.example.com/callback"
+          },
+          "scope": {
+            "type": "string",
+            "description": "The scope of access requested by the client",
+            "example": "openid credential"
+          },
+          "user_pin": {
+            "type": "string",
+            "description": "PIN required for pre-authorized flows (if applicable)",
+            "example": "1234"
+          },
+          "tx_code": {
+            "type": "string",
+            "description": "Transaction code for authorization (if applicable)",
+            "example": "tx-56789"
+          }
+        },
+        "description": "Request for obtaining an access token"
+      },
+      "AccessTokenResponse": {
+        "required": [
+          "access_token"
+        ],
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "The issued access token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "scope": {
+            "type": "string",
+            "description": "The granted scope(s) of the access token",
+            "example": "openid credential"
+          },
+          "token_type": {
+            "type": "string",
+            "description": "The type of token issued (typically \"Bearer\")",
+            "example": "Bearer"
+          },
+          "expires_in": {
+            "type": "number",
+            "description": "The duration in seconds for which the token is valid",
+            "example": 3600
+          },
+          "c_nonce": {
+            "type": "string",
+            "description": "A nonce to be used in credential requests",
+            "example": "b326c4ab-16f1-4304-83e1-4637f8fe4207"
+          },
+          "c_nonce_expires_in": {
+            "type": "number",
+            "description": "Expiration time of the c_nonce in seconds",
+            "example": 300
+          },
+          "authorization_pending": {
+            "type": "boolean",
+            "description": "Indicates if authorization is still pending",
+            "example": false
+          },
+          "interval": {
+            "type": "number",
+            "description": "The recommended polling interval in seconds",
+            "example": 5
+          }
+        }
+      },
+      "NotificationRequest": {
+        "required": [
+          "event"
+        ],
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "string",
+            "description": "Type of the event being notified",
+            "example": "CREDENTIAL_ISSUED"
+          },
+          "event_description": {
+            "type": "string",
+            "description": "A human-readable description of the event",
+            "example": "Credential issuance was successful."
+          },
+          "notification_id": {
+            "type": "string",
+            "description": "Unique identifier for the notification event",
+            "example": "notif-12345"
+          }
+        },
+        "description": "Request payload for sending a notification event"
+      },
+      "CredentialRequest": {
+        "required": [
+          "format"
+        ],
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "description": "Format of the requested credential",
+            "example": "jwt_vc_json",
+            "enum": [
+              "jwt_vc_json",
+              "jwt_vc",
+              "ldp_vc",
+              "jwt_vc_json-ld",
+              "vc+sd-jwt",
+              "mso_mdoc"
+            ]
+          },
+          "credential_identifier": {
+            "type": "string",
+            "description": "Identifier of the credential configuration to be issued",
+            "example": "UniversityDegree_JWT"
+          },
+          "proof": {
+            "$ref": "#/components/schemas/ProofOfPossession"
+          },
+          "credential_response_encryption": {
+            "$ref": "#/components/schemas/CredentialRequest_credential_response_encryption"
+          }
+        },
+        "description": "Request to issue a credential according to OID4VCI v1.0.13 specification"
+      },
+      "ProofOfPossession": {
+        "required": [
+          "jwt",
+          "proof_type"
+        ],
+        "type": "object",
+        "properties": {
+          "proof_type": {
+            "type": "string",
+            "description": "The type of proof provided",
+            "example": "jwt",
+            "enum": [
+              "jwt"
+            ]
+          },
+          "jwt": {
+            "type": "string",
+            "description": "A signed JWT containing the proof of possession",
+            "example": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9..."
+          }
+        },
+        "description": "Proof of possession structure for credential requests"
+      },
+      "CredentialOfferPayload": {
+        "required": [
+          "credential_configuration_ids"
+        ],
+        "type": "object",
+        "properties": {
+          "credential_issuer": {
+            "type": "string",
+            "description": "URL of the credential issuer",
+            "example": "https://agent.ssi.dev.sphereon.com/did-web/oid4vci"
+          },
+          "credential_configuration_ids": {
+            "type": "array",
+            "description": "Identifiers for the offered credential configurations",
+            "example": [
+              "WoonplaatsverklaringVCJWT"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "grants": {
+            "$ref": "#/components/schemas/CredentialOfferPayload_grants"
+          },
+          "client_id": {
+            "type": "string",
+            "description": "Optional Client identifier of the wallet",
+            "example": "https://wallet.example.com"
+          }
+        },
+        "description": "Core credential offer data"
+      },
+      "IssueStatus": {
+        "type": "string",
+        "description": "The issue status part of the issuance session",
+        "enum": [
+          "OFFER_CREATED ACCESS_TOKEN_REQUESTED ACCESS_TOKEN_CREATED CREDENTIAL_REQUEST_RECEIVED CREDENTIAL_ISSUED NOTIFICATION_CREDENTIAL_ACCEPTED NOTIFICATION_CREDENTIAL_DELETED NOTIFICATION_CREDENTIAL_FAILURE ERROR"
+        ]
+      },
+      "GrantAuthorizationCode": {
+        "type": "object",
+        "properties": {
+          "issuer_state": {
+            "type": "string",
+            "description": "An OAuth2 issuer_state that will be opaque to the wallet, but serves as a state correlation id between invocations as the wallet has to supply this value"
+          },
+          "authorization_server": {
+            "type": "string",
+            "description": "The authorization server to use, if the issuer metadata lists multiple authorization servers. No needed otherwise. Default to the first authorization server"
+          }
+        }
+      },
+      "GrantUrnIetf": {
+        "type": "object",
+        "properties": {
+          "pre-authorized_code": {
+            "type": "string",
+            "description": "The pre-authorized_code value that the wallet will need to supply later",
+            "example": "d270fee1-9185-4e60-9901-d291e1338d7a"
+          },
+          "authorization_server": {
+            "type": "string",
+            "description": "The authorization server to use, if the issuer metadata lists multiple authorization servers. No needed otherwise. Default to the first authorization server"
+          },
+          "tx_code": {
+            "$ref": "#/components/schemas/TxCode"
+          }
+        }
+      },
+      "TxCode": {
+        "type": "object",
+        "properties": {
+          "input_mode": {
+            "$ref": "#/components/schemas/InputCharSet"
+          },
+          "length": {
+            "type": "number",
+            "description": "Integer specifying the length of the Transaction Code. This helps the Wallet to render the input screen and improve the user experience.",
+            "format": "integer",
+            "example": 4
+          },
+          "description": {
+            "type": "string",
+            "description": "String containing guidance for the Holder of the Wallet on how to obtain the Transaction Code, e.g., describing over which communication channel it is delivered. The Wallet is RECOMMENDED to display this description next to the Transaction Code input screen to improve the user experience. The length of the string MUST NOT exceed 300 characters. The description does not support internationalization, however the Issuer MAY detect the Holder's language by previous communication or an HTTP Accept-Language header within an HTTP GET request for a Credential Offer URI.",
+            "example": "Please check your e-mail for a pin code"
+          }
+        },
+        "description": "A Transaction (pin) code that can be used for a pre-authorized_code flow"
+      },
+      "InputCharSet": {
+        "type": "string",
+        "enum": [
+          "numeric",
+          "text"
+        ]
+      },
+      "CredentialOfferRequest": {
+        "type": "object",
+        "properties": {
+          "baseUri": {
+            "type": "string",
+            "description": "Base URI for constructing offer-related links. Defaults to openid-credential-offer:// Mainly useful if you want to open the URL with a web wallet or with a native app using a different deeplink",
+            "example": "openid-credential-offer://"
+          },
+          "scheme": {
+            "type": "string",
+            "description": "URI scheme for offer delivery",
+            "example": "openid-credential-offer"
+          },
+          "pinLength": {
+            "type": "number",
+            "description": "Length of the user PIN if required for pre-authorization-code flow",
+            "example": 4
+          },
+          "qrCodeOpts": {
+            "type": "object",
+            "description": "Options for generating a QR code representation of the offer"
+          },
+          "credentialDataSupplierInput": {
+            "type": "object",
+            "description": "Additional input for the credential data supplier, this typically contains the actual credential payload (unsigned)",
+            "example": {
+              "naam": "Example name",
+              "rsin": "RSIN example",
+              "straatnaam": "Street example",
+              "huisnummer": "Housenumber example",
+              "postcode": "Zipcode example",
+              "plaats": "Place example"
+            }
+          }
+        },
+        "description": "Request to create a credential offer",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CredentialOfferPayload"
+          }
+        ]
+      },
+      "IssuerMetadata": {
+        "required": [
+          "credential_configurations_supported",
+          "credential_endpoint",
+          "credential_issuer"
+        ],
+        "type": "object",
+        "properties": {
+          "credential_configurations_supported": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/CredentialConfigurationSupported"
+            },
+            "description": "Map of supported credential configurations"
+          },
+          "credential_issuer": {
+            "type": "string",
+            "description": "URL identifying the credential issuer",
+            "example": "https://issuer.example.com"
+          },
+          "credential_endpoint": {
+            "type": "string",
+            "description": "URL of the credential endpoint",
+            "example": "https://issuer.example.com/credentials"
+          },
+          "authorization_servers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "deferred_credential_endpoint": {
+            "type": "string"
+          },
+          "notification_endpoint": {
+            "type": "string"
+          },
+          "token_endpoint": {
+            "type": "string"
+          },
+          "display": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MetadataDisplay"
+            }
+          },
+          "authorization_challenge_endpoint": {
+            "type": "string"
+          }
+        },
+        "description": "Credential issuer metadata as defined in the OID4VCI specification"
+      },
+      "CredentialConfigurationSupported": {
+        "required": [
+          "format"
+        ],
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "description": "Format of the credential being issued",
+            "example": "jwt_vc_json"
+          },
+          "scope": {
+            "type": "string",
+            "description": "Scope of the credential request, if applicable",
+            "example": "openid credential"
+          },
+          "cryptographic_binding_methods_supported": {
+            "type": "array",
+            "description": "Supported cryptographic binding methods",
+            "items": {
+              "type": "string"
+            }
+          },
+          "credential_signing_alg_values_supported": {
+            "type": "array",
+            "description": "Supported credential signing algorithms",
+            "items": {
+              "type": "string"
+            }
+          },
+          "proof_types_supported": {
+            "type": "object",
+            "description": "Types of proof supported for credential issuance"
+          },
+          "display": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CredentialsSupportedDisplay"
+            }
+          }
+        },
+        "description": "Defines the supported configurations for issuing credentials"
+      },
+      "MetadataDisplay": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Display name for the credential or issuer",
+            "example": "University Degree"
+          },
+          "locale": {
+            "type": "string",
+            "description": "Language locale for the display information",
+            "example": "en-US"
+          },
+          "logo": {
+            "$ref": "#/components/schemas/MetadataDisplay_logo"
+          },
+          "background_color": {
+            "type": "string",
+            "description": "Background color for display components"
+          },
+          "text_color": {
+            "type": "string",
+            "description": "Text color for display components"
+          }
+        },
+        "description": "Display metadata for a credential or issuer"
+      },
+      "CredentialsSupportedDisplay": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the credential for display purposes"
+          },
+          "locale": {
+            "type": "string",
+            "description": "Language locale for the credential display"
+          },
+          "logo": {
+            "$ref": "#/components/schemas/CredentialsSupportedDisplay_logo"
+          },
+          "background_color": {
+            "type": "string",
+            "description": "Background color for the credential display"
+          },
+          "text_color": {
+            "type": "string",
+            "description": "Text color for the credential display"
+          }
+        },
+        "description": "Display information for a credential type"
+      },
+      "inline_response_200": {
+        "type": "object",
+        "properties": {
+          "uri": {
+            "type": "string",
+            "description": "Credential offer URI",
+            "example": "https://issuer.example.com/credential-offer/123"
+          },
+          "userPin": {
+            "type": "string",
+            "description": "User PIN for access if required",
+            "example": "1234"
+          },
+          "txCode": {
+            "type": "object",
+            "description": "Transaction code details for tracking"
+          }
+        }
+      },
+      "webapp_credentialofferstatus_body": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identifier of the credential offer",
+            "example": "b326c4ab-16f1-4304-83e1-4637f8fe4207"
+          }
+        }
+      },
+      "CredentialRequest_credential_response_encryption": {
+        "type": "object",
+        "properties": {
+          "jwk": {
+            "type": "object",
+            "description": "JWK for encryption",
+            "example": {
+              "kty": "EC",
+              "crv": "P-256",
+              "x": "...",
+              "y": "..."
+            }
+          },
+          "alg": {
+            "type": "string",
+            "description": "Algorithm for encryption",
+            "example": "ES256"
+          },
+          "enc": {
+            "type": "string",
+            "description": "Content encryption algorithm",
+            "example": "A256GCM"
+          }
+        },
+        "description": "Parameters for response encryption"
+      },
+      "CredentialOfferPayload_grants": {
+        "type": "object",
+        "properties": {
+          "urn:ietf:params:oauth:grant-type:pre-authorized_code": {
+            "$ref": "#/components/schemas/GrantUrnIetf"
+          },
+          "authorization_code": {
+            "$ref": "#/components/schemas/GrantAuthorizationCode"
+          }
+        },
+        "description": "Supported authorization grant types"
+      },
+      "MetadataDisplay_logo": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL to the logo image"
+          },
+          "alt_text": {
+            "type": "string",
+            "description": "Alternative text for the logo"
+          }
+        }
+      },
+      "CredentialsSupportedDisplay_logo": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "URL to the credential logo"
+          },
+          "alt_text": {
+            "type": "string",
+            "description": "Alternative text for the logo"
+          }
+        }
+      }
+    }
+  }
+}
